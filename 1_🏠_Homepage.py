@@ -10,7 +10,7 @@ import pickle
 from pathlib import Path
 import streamlit_authenticator as stauth
 
-import database as db 
+import database as db  # local import
 
 # Settings 
 incomes = ["Salary", "Business", "Other Income"]
@@ -29,21 +29,7 @@ file_path = Path(__file__).parent / "hashed_pw.pkl"
 with file_path.open("rb") as file:
     hashed_passwords = pickle.load(file)
 
-# Credentials dictionary
-credentials = {
-    "usernames": {
-        "ajredada": {"name": "Aaron Redada", "password": hashed_passwords[0]},
-        "bbanner": {"name": "Bruce Banner", "password": hashed_passwords[1]},
-    }
-}
-
-# Initialize the authenticator
-authenticator = stauth.Authenticate(
-    credentials=credentials,
-    cookie_name="manager_dashboard",
-    cookie_key="abcdef",  # A random string key
-    cookie_expiry_days=30
-)
+authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "manager_dashboard", "abcdef", cookie_expiry_days=30)
 
 name, authentication_status, username = authenticator.login("Login", "main")
 
@@ -54,6 +40,8 @@ if authentication_status == None:
     st.warning("Please enter your username and password")
 
 if authentication_status:
+
+    st.title(page_title + " " + page_icon)
     st.sidebar.success("Select a page above.")
     st.sidebar.title(f"Welcome, {name}")
     authenticator.logout("Logout", "sidebar")
@@ -128,18 +116,18 @@ if authentication_status:
                 col3.metric("Remaining Budget", f"{remaining_budget} {currency}")
                 st.text(f"Comment: {comment}")
 
-                # Sankey Chart
+                # Create sankey chart
                 label = list(incomes.keys()) + ["Total Income"] + list(expenses.keys())
                 source = list(range(len(incomes))) + [len(incomes)] * len(expenses)
                 target = [len(incomes)] * len(incomes) + [label.index(expense) for expense in expenses.keys()]
                 value = list(incomes.values()) + list(expenses.values())
 
-                
+                # Data to dict, dict to sankey
                 link = dict(source=source, target=target, value=value)
                 node = dict(label=label, pad=20, thickness=30, color="#E694FF")
                 data = go.Sankey(link=link, node=node)
 
-                
+                # Plot it!
                 fig = go.Figure(data)
                 fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
                 st.plotly_chart(fig, use_container_width=True)
