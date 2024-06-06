@@ -29,7 +29,15 @@ file_path = Path(__file__).parent / "hashed_pw.pkl"
 with file_path.open("rb") as file:
     hashed_passwords = pickle.load(file)
 
-authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "manager_dashboard", "abcdef", cookie_expiry_days=30)
+# Initialize the authenticator
+authenticator = stauth.Authenticate(
+    names=names,
+    usernames=usernames,
+    passwords=hashed_passwords,
+    cookie_name="manager_dashboard",
+    key="abcdef",
+    cookie_expiry_days=30
+)
 
 name, authentication_status, username = authenticator.login("Login", "main")
 
@@ -40,8 +48,6 @@ if authentication_status == None:
     st.warning("Please enter your username and password")
 
 if authentication_status:
-
-    st.title(page_title + " " + page_icon)
     st.sidebar.success("Select a page above.")
     st.sidebar.title(f"Welcome, {name}")
     authenticator.logout("Logout", "sidebar")
