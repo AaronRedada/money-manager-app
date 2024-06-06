@@ -3,3 +3,4 @@ plotly
 requests
 forex-python
 streamlit-authenticator
+streamlit-option-menu
