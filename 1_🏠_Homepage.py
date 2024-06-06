@@ -29,7 +29,7 @@ file_path = Path(__file__).parent / "hashed_pw.pkl"
 with file_path.open("rb") as file:
     hashed_passwords = pickle.load(file)
 
-# Assuming the correct initialization might be:
+# Credentials dictionary
 credentials = {
     "usernames": {
         "ajredada": {"name": "Aaron Redada", "password": hashed_passwords[0]},
@@ -41,7 +41,6 @@ credentials = {
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="manager_dashboard",
-    key="abcdef",
     cookie_expiry_days=30
 )
 
