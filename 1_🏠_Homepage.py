@@ -41,6 +41,7 @@ credentials = {
 authenticator = stauth.Authenticate(
     credentials=credentials,
     cookie_name="manager_dashboard",
+    key="abcdef",  # A random string key
     cookie_expiry_days=30
 )
 
